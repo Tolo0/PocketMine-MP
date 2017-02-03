@@ -19,21 +19,11 @@
  *
 */
 
-namespace pocketmine\network\protocol;
+namespace pocketmine\item;
 
-class MapInfoRequestPacket extends DataPacket{
-	const NETWORK_ID = Info::MAP_INFO_REQUEST_PACKET;
-
-	public $uuid;
-
-	public function decode(){
-		$this->uuid = $this->getEntityId();
-		print 'Client requested '.$this->uuid.PHP_EOL;
+class FilledMap extends Item {
+	public function __construct($meta = 0, $count = 1) {
+		parent::__construct(self::FILLED_MAP, $meta, $count, "Filled Map");
 	}
-
-	public function encode(){
-		$this->reset();
-		$this->putEntityId($this->uuid);
-	}
-
 }
+

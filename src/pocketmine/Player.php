@@ -119,6 +119,7 @@ use pocketmine\network\protocol\EntityEventPacket;
 use pocketmine\network\protocol\FullChunkDataPacket;
 use pocketmine\network\protocol\Info as ProtocolInfo;
 use pocketmine\network\protocol\InteractPacket;
+use pocketmine\network\protocol\MapInfoRequestPacket;
 use pocketmine\network\protocol\MovePlayerPacket;
 use pocketmine\network\protocol\PlayerActionPacket;
 use pocketmine\network\protocol\PlayStatusPacket;
@@ -1952,6 +1953,10 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 					$this->forceMovement = null;
 				}
 
+				break;
+			case ProtocolInfo::MAP_INFO_REQUEST_PACKET:
+				/** @var MapInfoRequestPacket $packet */
+				$this->getServer()->broadcastMessage('Requested '.$packet->uuid);
 				break;
 			case ProtocolInfo::ADVENTURE_SETTINGS_PACKET:
 				//TODO: player abilities, check for other changes

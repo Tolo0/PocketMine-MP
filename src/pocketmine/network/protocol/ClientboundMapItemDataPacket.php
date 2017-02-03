@@ -27,9 +27,11 @@ class ClientboundMapItemDataPacket extends DataPacket {
 
 
 	public function decode() {
+		var_dump($this->getBuffer());
 	}
 
 	public function encode() {
+		$this->reset();
 		$this->putLong($this->mapId);
 		$this->putUnsignedVarInt($this->unknown);
 		$this->putUnsignedVarInt($this->unknown2);

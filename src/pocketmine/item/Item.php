@@ -178,6 +178,7 @@ class Item implements ItemIds, \JsonSerializable{
 			self::$list[self::BED] = Bed::class;
 			self::$list[self::REPEATER] = Repeater::class;
 			self::$list[self::COOKIE] = Cookie::class;
+			self::$list[self::FILLED_MAP] = FilledMap::class;
 			self::$list[self::SHEARS] = Shears::class;
 			self::$list[self::MELON] = Melon::class;
 			self::$list[self::PUMPKIN_SEEDS] = PumpkinSeeds::class;
@@ -211,6 +212,7 @@ class Item implements ItemIds, \JsonSerializable{
 			self::$list[self::POTATO] = Potato::class;
 			self::$list[self::BAKED_POTATO] = BakedPotato::class;
 			self::$list[self::POISONOUS_POTATO] = PoisonousPotato::class;
+			self::$list[self::EMPTY_MAP] = EmptyMap::class;
 			self::$list[self::GOLDEN_CARROT] = GoldenCarrot::class;
 			self::$list[self::MOB_HEAD] = MobHead::class;
 			self::$list[self::CARROT_ON_A_STICK] = CarrotOnAStick::class;
