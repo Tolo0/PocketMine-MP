@@ -111,6 +111,7 @@ use pocketmine\network\protocol\AnimatePacket;
 use pocketmine\network\protocol\AvailableCommandsPacket;
 use pocketmine\network\protocol\BatchPacket;
 use pocketmine\network\protocol\ChunkRadiusUpdatedPacket;
+use pocketmine\network\protocol\ClientboundMapItemDataPacket;
 use pocketmine\network\protocol\ContainerClosePacket;
 use pocketmine\network\protocol\ContainerSetContentPacket;
 use pocketmine\network\protocol\DataPacket;
@@ -1956,7 +1957,21 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 				break;
 			case ProtocolInfo::MAP_INFO_REQUEST_PACKET:
 				/** @var MapInfoRequestPacket $packet */
-				$this->getServer()->broadcastMessage('Requested '.$packet->uuid);
+				$this->getServer()->broadcastMessage('Requested ' . $packet->uuid);
+				$path = Server::getInstance()->getFilePath() . "src/pocketmine/resources/map_" . $packet->uuid . ".dat";
+				print $path;
+				if ($packet->uuid == -1 || !touch($path)) {
+					print 'breaking' . PHP_EOL;
+					break;
+				}
+				$pk = new ClientboundMapItemDataPacket();
+				$pk->mapId = $packet->uuid; // EntityUniqueID
+				$pk->unknown = $this->x;
+				$pk->unknown2 = $this->z;
+				$nbt = new NBT(NBT::BIG_ENDIAN);
+				$nbt->readCompressed(file_get_contents($path));
+				#$pk->data = $nbt->getData(); // ubyte[]
+				$this->dataPacket($pk);
 				break;
 			case ProtocolInfo::ADVENTURE_SETTINGS_PACKET:
 				//TODO: player abilities, check for other changes
