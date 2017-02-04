@@ -1958,12 +1958,15 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 			case ProtocolInfo::MAP_INFO_REQUEST_PACKET:
 				/** @var MapInfoRequestPacket $packet */
 				$path = Server::getInstance()->getFilePath() . "src/pocketmine/resources/map_" . $packet->uuid . ".dat";
-				print $path;
 				if ($packet->uuid == -1 || !touch($path)) break;
+				$nbt = new NBT(NBT::BIG_ENDIAN);
+				$nbt->readCompressed(file_get_contents($path));
 				$pk = new ClientboundMapItemDataPacket();
-				$pk->mapId = $packet->uuid;
-				$pk->unknown = $this->x;
-				$pk->unknown2 = $this->z;
+				$pk->mapId = $packet->uuid; // EntityID
+				$pk->unknown = 0; // Unsigned VarInt
+				$pk->unknown2 = 0x06; // Unsigned VarInt
+				$pk->unknown3 = $packet->uuid + 1; // EntityID //Parent ID?
+				$pk->data = unpack('C*', $nbt->getData()->data->colors->getValue()); // ubyte[]
 				$this->dataPacket($pk);
 				break;
 			case ProtocolInfo::ADVENTURE_SETTINGS_PACKET:
