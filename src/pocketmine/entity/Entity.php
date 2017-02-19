@@ -439,7 +439,21 @@ abstract class Entity extends Location implements Metadatable{
 	public function setNameTagAlwaysVisible($value = true){
 		$this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_ALWAYS_SHOW_NAMETAG, $value);
 	}
-
+	
+	/**
+	 * @return float
+	 */
+	public function getScale(): float{
+		return $this->getDataProperty(self::DATA_SCALE);
+	}
+	
+	/**
+	 * @param float $value
+	 */
+	public function setScale(float $value){
+		$this->setDataProperty(self::DATA_SCALE, self::DATA_TYPE_FLOAT, $value);
+	}
+	
 	public function isSneaking(){
 		return $this->getDataFlag(self::DATA_FLAGS, self::DATA_FLAG_SNEAKING);
 	}
@@ -763,7 +777,7 @@ abstract class Entity extends Location implements Metadatable{
 	 * @param EntityDamageEvent $source
 	 *
 	 */
-	public function attack($damage, EntityDamageEvent $source){
+	public function attack($damage, EntityDamageEvent $source){ //$damage is unused
 		if($this->hasEffect(Effect::FIRE_RESISTANCE) and (
 				$source->getCause() === EntityDamageEvent::CAUSE_FIRE
 				or $source->getCause() === EntityDamageEvent::CAUSE_FIRE_TICK
@@ -788,7 +802,7 @@ abstract class Entity extends Location implements Metadatable{
 	 * @param EntityRegainHealthEvent $source
 	 *
 	 */
-	public function heal($amount, EntityRegainHealthEvent $source){
+	public function heal($amount, EntityRegainHealthEvent $source){ //$amount is unused
 		$this->server->getPluginManager()->callEvent($source);
 		if($source->isCancelled()){
 			return;
@@ -1686,8 +1700,8 @@ abstract class Entity extends Location implements Metadatable{
 			if($this->chunk !== null){
 				$this->chunk->removeEntity($this);
 			}
-			if($this->level !== null){
-				$this->level->removeEntity($this);
+			if($this->getLevel() !== null){
+				$this->getLevel()->removeEntity($this);
 			}
 		}
 	}

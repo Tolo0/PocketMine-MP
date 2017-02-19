@@ -1,10 +1,10 @@
 <?php
 namespace pocketmine\entity;
 
-use pocketmine\Player;
-use pocketmine\item\Item as ItemItem;
 use pocketmine\event\entity\EntityRegainHealthEvent;
+use pocketmine\item\Item as ItemItem;
 use pocketmine\network\protocol\AddEntityPacket;
+use pocketmine\Player;
 
 class MinecartChest extends Snake{
 
@@ -41,7 +41,7 @@ class MinecartChest extends Snake{
     	if($this->isAlive()){
     		$this->timings->startTiming();
     		$hasUpdate = false;
-    		
+    		/*
     		if($this->isLinked() && $this->getlinkedTarget() !== null){
     			$hasUpdate = true;
 				$newx = $this->getX() - $this->getlinkedTarget()->getX();
@@ -49,7 +49,7 @@ class MinecartChest extends Snake{
 				$newz = $this->getZ() - $this->getlinkedTarget()->getZ();
 				$this->move($newx, $newy, $newz);
 				$this->updateMovement();
-			}
+			}*/
 			if($this->getHealth() < $this->getMaxHealth()){
 				$this->heal(0.1, new EntityRegainHealthEvent($this, 0.1, EntityRegainHealthEvent::CAUSE_CUSTOM));
 				$hasUpdate = true;
