@@ -19,13 +19,21 @@
  *
 */
 
-namespace pocketmine\entity;
+namespace pocketmine\inventory;
 
-use pocketmine\tile\Nameable;
+use pocketmine\entity\Entity;
+use pocketmine\level\Position;
 
-abstract class Animal extends Creature implements Ageable/*, Nameable*/ {
+class EntityInventory extends Position implements InventoryHolder {
 
-	public function isBaby(){
-		return $this->getDataFlag(self::DATA_FLAGS, self::DATA_FLAG_BABY);
+	private $inventory;
+
+	public function __construct(Inventory $inventory, Entity $entity){
+		$this->inventory = $inventory;
+		parent::__construct($entity->x, $entity->y, $entity->z, $entity->level);
+	}
+
+	public function getInventory(){
+		return $this->inventory;
 	}
 }

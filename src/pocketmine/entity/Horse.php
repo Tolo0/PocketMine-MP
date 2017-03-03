@@ -1,30 +1,34 @@
 <?php
 namespace pocketmine\entity;
 
+use pocketmine\inventory\HorseInventory;
+use pocketmine\inventory\Inventory;
+use pocketmine\inventory\InventoryHolder;
 use pocketmine\item\Item as ItemItem;
+use pocketmine\nbt\tag\StringTag;
 use pocketmine\network\protocol\AddEntityPacket;
 use pocketmine\Player;
+use pocketmine\tile\Nameable;
 
-class Horse extends Animal implements Rideable{
-    const NETWORK_ID = 23;
+class Horse extends Animal implements Rideable, InventoryHolder, Tameable, Nameable {
+	const NETWORK_ID = 23;
 
-    public $width = 0.75;
-    public $height = 1.562;
-    public $lenght = 1.5;//TODO
-	
+	public $width = 0.75;
+	public $height = 1.562;
+	public $lenght = 1.5;//TODO
+
 	protected $exp_min = 1;
 	protected $exp_max = 3;//TODO
 	protected $maxHealth = 10;//TODO
+	/** @var HorseInventory $inventory */
+	private $inventory;
 
-    public function initEntity(){
-        parent::initEntity();
-    }
+	public function initEntity() {
+		parent::initEntity();
+		$this->inventory = null;
+	}
 
-    public function getName(){
-        return "Horse";//TODO: Name by type
-    }
-
-	public function spawnTo(Player $player){
+	public function spawnTo(Player $player) {
 		$pk = new AddEntityPacket();
 		$pk->type = self::NETWORK_ID;
 		$pk->eid = $this->getId();
@@ -42,19 +46,60 @@ class Horse extends Animal implements Rideable{
 		parent::spawnTo($player);
 	}
 
-    public function isBaby(){
-        return $this->getDataFlag(self::DATA_AGEABLE_FLAGS, self::DATA_FLAG_BABY);
-    }
+	public function isTamed() {
+		return $this->getDataFlag(self::DATA_FLAGS, self::DATA_FLAG_TAMED);
+	}
 
-    public function getDrops(){
-        $drops = [
-            ItemItem::get(ItemItem::LEATHER, 0, mt_rand(0, 2))
-        ];
+	public function setTamed($value = true) {
+		return $this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_TAMED, $value);
+	}
 
-        return $drops;
-    }
-    
-    public function canBeLeashed() {
-    	return true; //TODO: distance check, already leashed check
-    }
+	public function getDrops() {
+		$drops = [
+			ItemItem::get(ItemItem::LEATHER, 0, mt_rand(0, 2))
+		];
+
+		return $drops;
+	}
+
+	public function canBeLeashed() {
+		return !$this->getDataFlag(self::DATA_FLAGS, self::DATA_FLAG_LEASHED); //TODO: distance check
+	}
+
+	/**
+	 * Get the object related inventory
+	 *
+	 * @return Inventory|null
+	 */
+	public function getInventory() {
+		print $this->getName().PHP_EOL;
+		return $this->isTamed() ? $this->inventory : null;
+		// TODO: Implement getInventory() method.
+	}
+
+	/**
+	 * @param void $str
+	 */
+	public function setName($str) {
+		if ($str === "") {
+			unset($this->namedtag->CustomName);
+			return;
+		}
+
+		$this->namedtag->CustomName = new StringTag("CustomName", $str);
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getName() {
+		return isset($this->namedtag->CustomName) ? $this->namedtag->CustomName->getValue() : "Horse";//TODO: Name by type
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function hasName() {
+		return isset($this->namedtag->CustomName);
+	}
 }

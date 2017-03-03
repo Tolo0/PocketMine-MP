@@ -479,7 +479,14 @@ abstract class Entity extends Location implements Metadatable{
 	}
 
 	public function setGliding($value = true){
-		$this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_GLIDING, (bool) $value);
+		if ($value !== $this->isGliding()) {
+			if ($value) {
+				$this->boundingBox->setBB($this->boundingBox->contract(0, 1, 0));
+			} else {
+				$this->boundingBox->setBB($this->boundingBox->expand(0, 1, 0));
+			}
+			$this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_GLIDING, (bool) $value);
+		}
 	}
 
 	public function isImmobile() : bool{

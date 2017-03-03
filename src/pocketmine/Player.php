@@ -28,6 +28,7 @@ use pocketmine\command\CommandSender;
 use pocketmine\entity\Arrow;
 use pocketmine\entity\Effect;
 use pocketmine\entity\Entity;
+use pocketmine\entity\Horse;
 use pocketmine\entity\Human;
 use pocketmine\entity\Item as DroppedItem;
 use pocketmine\entity\Living;
@@ -2488,6 +2489,9 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 							$this->setGliding(false);
 						}
 						break 2;
+					case 16: {
+						//PlayerActionPacket::ACTION_START_BREAK in Adventure mode @dktapps
+					}
 					default:
 						assert(false, "Unhandled player action " . $packet->action . " from " . $this->getName());
 				}
@@ -2673,7 +2677,11 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 									$newItem->setCount($item->getCount() - 1);
 									$this->inventory->setItemInHand($newItem??Item::get(Item::AIR));
 								}
-							} else {
+							} elseif($target instanceof Horse) {//Hacky AF.
+								if($target->isTamed())
+									$target->getInventory()->onOpen($this);
+								else{$target->setTamed();$target->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_INLOVE); print 'Taming';}
+						} else {
 								$this->inventory->setItemInHand($item);
 							}
 						}
@@ -3538,8 +3546,8 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 		}elseif($this->allowFlight and $source->getCause() === EntityDamageEvent::CAUSE_FALL){
 			$source->setCancelled();
 		}elseif(!$this->allowFlight and $source->getCause() === EntityDamageEvent::CAUSE_FALL && ($this->isGliding() || $this->getInventory()->getItem($this->getInventory()->getSize() + 1)->getId() === Item::ELYTRA)){/*due to lag it could happen that you first close the Elytra and then take damage, so i add a slot check*/
-			$source->setDamage($damage = $this->getMotion()->distance($this->speed));//TODO: Check if this is correct. The faster, the more damage#Elytra
-            print "Damage dealed is $damage".PHP_EOL;
+			$source->setDamage($damage = ($this->distance($this->speed->subtract($this))->divide(10)));//TODO: Check if this is correct. The faster, the more damage#Elytra
+            $this->getServer()->getLogger()->debug("Damage dealed by Elytra is $damage");
 		}
 
 		parent::attack($damage, $source);

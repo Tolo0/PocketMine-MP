@@ -22,6 +22,7 @@
 namespace pocketmine\item;
 
 use pocketmine\entity\Animal;
+use pocketmine\entity\Entity;
 use pocketmine\entity\Monster;
 use pocketmine\entity\NPC;
 
@@ -31,11 +32,11 @@ class Nametag extends Item {
 	}
 
 	/**
-	 * @param \pocketmine\block\Block|\pocketmine\entity\Entity $object
+	 * @param Entity $object
 	 * @return bool
 	 */
 	public function useOn($object) {
-		if (!$object instanceof Animal && !$object instanceof Monster && !$object instanceof NPC) return false;//TODO: All types
+		if (!$object instanceof Animal && !$object instanceof Monster && !$object instanceof NPC) return false;//TODO: All types (Nameable)
 		elseif ($this->hasCustomName()) {
 			if ($this->getCustomName() === $object->getNameTag()) return false;
 			$object->setNameTag($this->getCustomName());
