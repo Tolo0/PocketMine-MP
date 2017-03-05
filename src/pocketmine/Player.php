@@ -145,6 +145,7 @@ use pocketmine\plugin\Plugin;
 use pocketmine\tile\Beacon;
 use pocketmine\tile\ItemFrame;
 use pocketmine\tile\Spawnable;
+use pocketmine\utils\Color;
 use pocketmine\utils\TextFormat;
 use pocketmine\utils\UUID;
 
@@ -1983,11 +1984,31 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 				$nbt = new NBT(NBT::BIG_ENDIAN);
 				$nbt->readCompressed(file_get_contents($path));
 				$pk = new ClientboundMapItemDataPacket();
-				$pk->mapId = $packet->uuid; // EntityID
-				$pk->unknown = 0; // Unsigned VarInt
-				$pk->unknown2 = 0x06; // Unsigned VarInt
-				$pk->unknown3 = $packet->uuid + 1; // EntityID //Parent ID?
-				$pk->data = unpack('C*', $nbt->getData()->data->colors->getValue()); // ubyte[]
+				$pk->mapId = $packet->uuid;
+				$pk->eids = [];
+				$pk->scale = 1;
+				$pk->decorations = [];
+				$pk->width = $nbt->getData()->data->width->getValue();
+				$pk->height = $nbt->getData()->data->height->getValue();
+				$pk->xOffset = 0;
+				$pk->yOffset = 0;
+				/** @var Color[][] */
+				$colors = [];
+				$data = unpack('C*', $nbt->getData()->data->colors->getValue());
+					for($y = 0; $y < $pk->height; ++$y){
+						for($x = 0; $x < $pk->width; ++$x){
+							$c = Color::fromRGB(0);
+							$c->setR(128);
+							$c->setG(128);
+							$c->setB(128);
+							$c->setA(255);
+							$colors[$y][$x] = $c;
+							print $c;
+
+							#print Color::fromRGB($data[($y*$pk->width) + $x]??0);
+						}
+					}
+				print "Sending map";
 				$this->dataPacket($pk);
 				break;
 			case ProtocolInfo::ADVENTURE_SETTINGS_PACKET:
