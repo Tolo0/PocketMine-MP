@@ -43,9 +43,7 @@ class MapToPNG {
 		for ($y = 0; $y < $size; ++$y) {
 			for ($x = 0; $x < $size; ++$x) {
 				$color = $colors[($y*$size) + $x];
-				#imagesetpixel($img, $x, $y, imagecolorallocatealpha($img, $color->getR(),$color->getG(),$color->getB(),$color->getA()));
 				imagesetpixel($img, $x, $y, imagecolorallocate($img, $color->getR(),$color->getG(),$color->getB()));
-				print $color;
 			}
 		}
 		imagepng($img, $filename);

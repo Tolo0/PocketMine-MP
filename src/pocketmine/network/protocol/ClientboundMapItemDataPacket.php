@@ -113,8 +113,7 @@ class ClientboundMapItemDataPacket extends DataPacket {
 			$this->putVarInt($this->yOffset);
 			for($y = 0; $y < $this->height; ++$y){
 				for($x = 0; $x < $this->width; ++$x){
-					#$this->putUnsignedVarInt($this->colors[$y][$x]->toABGR());
-					$this->putUnsignedVarInt(4286611584);
+					$this->putUnsignedVarInt($this->colors[$y][$x]->toABGR());
 				}
 			}
 		}

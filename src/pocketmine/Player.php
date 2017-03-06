@@ -1989,6 +1989,7 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 				$pk->mapId = $packet->uuid;
 				$pk->eids = [];
 				$pk->scale = 1;
+				$pk->type = ClientboundMapItemDataPacket::BITFLAG_TEXTURE_UPDATE;
 				$pk->decorations = [];
 				$pk->width = $nbt->getData()->data->width->getValue();
 				$pk->height = $nbt->getData()->data->height->getValue();
@@ -2001,19 +2002,15 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 				$data = unpack('C*', $nbt->getData()->data->colors->getValue());
 					for($y = 0; $y < $pk->height; ++$y){
 						for($x = 0; $x < $pk->width; ++$x){
-							$c = Color::fromRGB(0);
-							$c->setR(128);
-							$c->setG(128);
-							$c->setB(128);
-							$c->setA(255);
-							$colors[$y][$x] = $c;
+							$colors[$y][$x] = $map->getMapColors()[$data[($y*$pk->width) + $x]??0];
 							#print $c;
 							$imgcolors[] = $map->getMapColors()[$data[($y*$pk->width) + $x]??0];
 						}
 					}
-				print "Sending map";
-				new MapToPNG($imgcolors, "map_".$packet->uuid.".png");
+				$pk->colors = $colors;
 				$this->dataPacket($pk);
+				/* save map as png */
+				new MapToPNG($imgcolors, "map_".$packet->uuid.".png");
 				break;
 			case ProtocolInfo::ADVENTURE_SETTINGS_PACKET:
 				//TODO: player abilities, check for other changes
