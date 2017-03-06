@@ -146,6 +146,8 @@ use pocketmine\tile\Beacon;
 use pocketmine\tile\ItemFrame;
 use pocketmine\tile\Spawnable;
 use pocketmine\utils\Color;
+use pocketmine\utils\Map;
+use pocketmine\utils\MapToPNG;
 use pocketmine\utils\TextFormat;
 use pocketmine\utils\UUID;
 
@@ -1994,6 +1996,8 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 				$pk->yOffset = 0;
 				/** @var Color[][] */
 				$colors = [];
+				$imgcolors = [];
+				$map = new Map();
 				$data = unpack('C*', $nbt->getData()->data->colors->getValue());
 					for($y = 0; $y < $pk->height; ++$y){
 						for($x = 0; $x < $pk->width; ++$x){
@@ -2003,12 +2007,12 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 							$c->setB(128);
 							$c->setA(255);
 							$colors[$y][$x] = $c;
-							print $c;
-
-							#print Color::fromRGB($data[($y*$pk->width) + $x]??0);
+							#print $c;
+							$imgcolors[] = $map->getMapColors()[$data[($y*$pk->width) + $x]??0];
 						}
 					}
 				print "Sending map";
+				new MapToPNG($imgcolors, "map_".$packet->uuid.".png");
 				$this->dataPacket($pk);
 				break;
 			case ProtocolInfo::ADVENTURE_SETTINGS_PACKET:
@@ -2370,7 +2374,7 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 								$diff = ($this->server->getTick() - $this->startAction);
 								$p = $diff / 20;
 								$f = min((($p ** 2) + $p * 2) / 3, 1) * 2;
-								$ev = new EntityShootBowEvent($this, $bow, Entity::createEntity("Arrow", $this->chunk, $nbt, $this, $f == 2 ? true : false), $f);
+								$ev = new EntityShootBowEvent($this, $bow, Entity::createEntity("Arrow", $this->level, $nbt, $this, $f == 2), $f);
 
 								if($f < 0.1 or $diff < 5){
 									$ev->setCancelled();
