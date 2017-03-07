@@ -28,13 +28,17 @@ use pocketmine\block\Slab;
 use pocketmine\block\Slab2;
 use pocketmine\block\Stone;
 use pocketmine\item\Dye;
+use pocketmine\Server;
 
 class Map {
 
 	public static $BaseMapColors = [];
 	public static $MapColors = [];
+	public static $idConfig;
 
 	public function __construct() {
+		$path = Server::getInstance()->getDataPath() . "maps/idcounts.json";
+		self::$idConfig = new Config($path, Config::JSON, ["map" => 0]);
 		self::$BaseMapColors = [
 			new Color(0, 0, 0, 0),
 			new Color(127, 178, 56),
@@ -88,6 +92,15 @@ class Map {
 
 	public function getMapColors() {
 		return self::$MapColors;
+	}
+
+
+	public static function getNewId() {
+		$id = self::$idConfig->get("map", 0);
+		$id++;
+		self::$idConfig->set("map", $id);
+		self::$idConfig->save();
+		return $id;
 	}
 
 	public function getBlockColor(Block $block) {
