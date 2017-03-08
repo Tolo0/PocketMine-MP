@@ -28,17 +28,20 @@ use pocketmine\block\Slab;
 use pocketmine\block\Slab2;
 use pocketmine\block\Stone;
 use pocketmine\item\Dye;
+use pocketmine\item\Map;
 use pocketmine\Server;
 
-class Map {
+class MapUtils {
 
 	public static $BaseMapColors = [];
 	public static $MapColors = [];
 	public static $idConfig;
 
 	public function __construct() {
-		$path = Server::getInstance()->getDataPath() . "maps/idcounts.json";
-		self::$idConfig = new Config($path, Config::JSON, ["map" => 0]);
+		$path = Server::getInstance()->getDataPath() . "maps";
+		@mkdir($path);
+		$filename = "idcounts.json";
+		self::$idConfig = new Config($path.'/'.$filename, Config::JSON, ["map" => 0]);
 		self::$BaseMapColors = [
 			new Color(0, 0, 0, 0),
 			new Color(127, 178, 56),
@@ -103,7 +106,30 @@ class Map {
 		return $id;
 	}
 
-	public function getBlockColor(Block $block) {
+	public static function exportToPDF(Map $map){
+		if (!extension_loaded("gd")) {
+			Server::getInstance()->getLogger()->error("Unable to find the gd extension, can't create PNG image from Map");
+			var_dump(get_loaded_extensions());
+			return false;
+		}
+		@mkdir(Server::getInstance()->getDataPath()."maps");
+		$filename = Server::getInstance()->getDataPath()."maps/map_".$map->getMapId().".png";
+		$colors = $map->getColors();
+		$width = $map->getWidth();
+		$height = $map->getHeight();
+		$img = imagecreatetruecolor($width, $height);
+		#imagecolortransparent($img, imagecolorallocate($img, 0, 0, 0));
+		for ($y = 0; $y < $height; ++$y) {
+			for ($x = 0; $x < $width; ++$x) {
+				/** @var Color $color */
+				$color = $colors[$y][$x];
+				imagesetpixel($img, $x, $y, imagecolorallocate($img, $color->getR(),$color->getG(),$color->getB()));
+			}
+		}
+		return imagepng($img, $filename);
+	}
+
+	public static function getBlockColor(Block $block) {
 		$meta = $block->getDamage();
 		switch ($id = $block->getId()) {
 			case Block::GRASS:

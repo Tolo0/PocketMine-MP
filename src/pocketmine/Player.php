@@ -85,6 +85,7 @@ use pocketmine\inventory\ShapedRecipe;
 use pocketmine\inventory\ShapelessRecipe;
 use pocketmine\inventory\SimpleTransactionGroup;
 use pocketmine\item\Item;
+use pocketmine\item\Map;
 use pocketmine\item\Tool;
 use pocketmine\level\ChunkLoader;
 use pocketmine\level\format\Chunk;
@@ -142,12 +143,10 @@ use pocketmine\network\SourceInterface;
 use pocketmine\permission\PermissibleBase;
 use pocketmine\permission\PermissionAttachment;
 use pocketmine\plugin\Plugin;
-use pocketmine\tile\Beacon;
 use pocketmine\tile\ItemFrame;
 use pocketmine\tile\Spawnable;
 use pocketmine\utils\Color;
-use pocketmine\utils\Map;
-use pocketmine\utils\MapToPNG;
+use pocketmine\utils\MapUtils;
 use pocketmine\utils\TextFormat;
 use pocketmine\utils\UUID;
 
@@ -2008,35 +2007,30 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 			case ProtocolInfo::MAP_INFO_REQUEST_PACKET:
 				/** @var MapInfoRequestPacket $packet */
 				$path = Server::getInstance()->getFilePath() . "src/pocketmine/resources/map_" . $packet->uuid . ".dat";
-				if ($packet->uuid == -1 || !touch($path)) break;
-				$nbt = new NBT(NBT::BIG_ENDIAN);
-				$nbt->readCompressed(file_get_contents($path));
-				$pk = new ClientboundMapItemDataPacket();
-				$pk->mapId = $packet->uuid;
-				$pk->eids = [];
-				$pk->scale = 1;
-				$pk->type = ClientboundMapItemDataPacket::BITFLAG_TEXTURE_UPDATE;
-				$pk->decorations = [];
-				$pk->width = $nbt->getData()->data->width->getValue();
-				$pk->height = $nbt->getData()->data->height->getValue();
-				$pk->xOffset = 0;
-				$pk->yOffset = 0;
-				/** @var Color[][] */
-				$colors = [];
-				$imgcolors = [];
-				$map = new Map();
-				$data = unpack('C*', $nbt->getData()->data->colors->getValue());
-					for($y = 0; $y < $pk->height; ++$y){
-						for($x = 0; $x < $pk->width; ++$x){
-							$colors[$y][$x] = $map->getMapColors()[$data[($y*$pk->width) + $x]??0];
-							#print $c;
-							$imgcolors[] = $map->getMapColors()[$data[($y*$pk->width) + $x]??0];
+				if ($packet->uuid == -1 || !file_exists($path)) {
+					$map = new Map($packet->uuid);
+					$map->update(ClientboundMapItemDataPacket::BITFLAG_TEXTURE_UPDATE);
+				} else {
+					$mapUtils = new MapUtils();
+					$nbt = new NBT(NBT::BIG_ENDIAN);
+					$nbt->readCompressed(file_get_contents($path));
+					$scale = $nbt->getData()->data->scale->getValue()??0;
+					$decorations = $nbt->getData()->data->decorations->getValue()??[];
+					$width = $nbt->getData()->data->width->getValue()??128;
+					$height = $nbt->getData()->data->height->getValue()??128;
+					$xCenter = $nbt->getData()->data->xCenter->getValue()??0;
+					$zCenter = $nbt->getData()->data->zCenter->getValue()??0;
+					/** @var Color[][] */
+					$colors = [];
+					$data = unpack('C*', $nbt->getData()->data->colors->getValue());
+					for ($y = 0; $y < $height; ++$y) {
+						for ($x = 0; $x < $width; ++$x) {
+							$colors[$y][$x] = $mapUtils->getMapColors()[$data[($y * $width) + $x]??0];
 						}
 					}
-				$pk->colors = $colors;
-				$this->dataPacket($pk);
-				/* save map as png */
-				new MapToPNG($imgcolors, "map_".$packet->uuid.".png");
+					$map = new Map($packet->uuid, $colors, $scale, $width, $height, $decorations, $xCenter, $zCenter);
+					$map->update(ClientboundMapItemDataPacket::BITFLAG_TEXTURE_UPDATE);
+				}
 				break;
 			case ProtocolInfo::ADVENTURE_SETTINGS_PACKET:
 				//TODO: player abilities, check for other changes

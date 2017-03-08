@@ -26,6 +26,7 @@ class ClientboundMapItemDataPacket extends DataPacket {
 	const NETWORK_ID = ProtocolInfo::CLIENTBOUND_MAP_ITEM_DATA_PACKET;
 	const BITFLAG_TEXTURE_UPDATE = 0x02;
 	const BITFLAG_DECORATION_UPDATE = 0x04;
+	const BITFLAG_ENTITY_UPDATE = 0x08;
 	public $mapId;
 	public $type;
 	public $eids = [];
@@ -40,7 +41,7 @@ class ClientboundMapItemDataPacket extends DataPacket {
 	public function decode(){
 		$this->mapId = $this->getVarInt();
 		$this->type = $this->getUnsignedVarInt();
-		if(($this->type & 0x08) !== 0){
+		if(($this->type & self::BITFLAG_ENTITY_UPDATE) !== 0){
 			$count = $this->getUnsignedVarInt();
 			for($i = 0; $i < $count; ++$i){
 				$this->eids[] = $this->getVarInt(); //entity unique ID, signed var-int
@@ -78,7 +79,7 @@ class ClientboundMapItemDataPacket extends DataPacket {
 		$this->putVarInt($this->mapId); //entity unique ID, signed var-int
 		$type = 0;
 		if(($eidsCount = count($this->eids)) > 0){
-			$type |= 0x08;
+			$type |= self::BITFLAG_ENTITY_UPDATE;
 		}
 		if(($decorationCount = count($this->decorations)) > 0){
 			$type |= self::BITFLAG_DECORATION_UPDATE;
@@ -87,7 +88,7 @@ class ClientboundMapItemDataPacket extends DataPacket {
 			$type |= self::BITFLAG_TEXTURE_UPDATE;
 		}
 		$this->putUnsignedVarInt($type);
-		if(($type & 0x08) !== 0){ //TODO: find out what these are for
+		if(($type & self::BITFLAG_ENTITY_UPDATE) !== 0){ //TODO: find out what these are for
 			$this->putUnsignedVarInt($eidsCount);
 			foreach($this->eids as $eid){
 				$this->putVarInt($eid);
