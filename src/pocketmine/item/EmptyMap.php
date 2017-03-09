@@ -23,14 +23,10 @@ namespace pocketmine\item;
 
 use pocketmine\block\Block;
 use pocketmine\level\Level;
-use pocketmine\nbt\NBT;
 use pocketmine\nbt\tag\CompoundTag;
-use pocketmine\nbt\tag\ShortTag;
 use pocketmine\nbt\tag\StringTag;
 use pocketmine\Player;
-use pocketmine\Server;
-use pocketmine\utils\Config;
-use pocketmine\utils\Map;
+use pocketmine\utils\MapUtils;
 
 class EmptyMap extends Item {
 	public function __construct($meta = 0, $count = 1) {
@@ -42,15 +38,23 @@ class EmptyMap extends Item {
 	}
 
 	public function onActivate(Level $level, Player $player, Block $block, Block $target, $face, $fx, $fy, $fz) {
-		$item = Item::get(Item::FILLED_MAP, 0, 1);
+		if ($this->useOn($block)) {
+			$item = Item::get(Item::FILLED_MAP, 0, 1);
+			$map = new MapUtils();
+			$tag = new CompoundTag("", []);
+			$tag->map_uuid = new StringTag("map_uuid", strval($map::getNewId()));
+			$item->setCompoundTag($tag);
+			$player->getInventory()->addItem($item);
+			return true;
+		}
+		return false;
+	}
 
-		$map = new Map();
-		$tag = new CompoundTag("", []);
-		$tag->map_uuid = new StringTag("map_uuid", strval($map::getNewId()));
-		$item->setCompoundTag($tag);
-		$player->getInventory()->addItem($item);
-		$this->setCount($this->getCount() - 1);
-		return true;
+	public function useOn($object) {
+		if ($object instanceof Block) {
+			$this->count--;
+			return true;
+		} else return false;
 	}
 }
 

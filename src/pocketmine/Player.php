@@ -2030,6 +2030,7 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 					}
 					$map = new Map($packet->uuid, $colors, $scale, $width, $height, $decorations, $xCenter, $zCenter);
 					$map->update(ClientboundMapItemDataPacket::BITFLAG_TEXTURE_UPDATE);
+					MapUtils::cacheMap($map);
 				}
 				break;
 			case ProtocolInfo::ADVENTURE_SETTINGS_PACKET:

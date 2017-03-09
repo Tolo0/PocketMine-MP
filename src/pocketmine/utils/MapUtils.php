@@ -36,6 +36,7 @@ class MapUtils {
 	public static $BaseMapColors = [];
 	public static $MapColors = [];
 	public static $idConfig;
+	private static $cachedMaps = [];
 
 	public function __construct() {
 		$path = Server::getInstance()->getDataPath() . "maps";
@@ -93,7 +94,7 @@ class MapUtils {
 		}
 	}
 
-	public function getMapColors() {
+	public function getMapColors() {//TODO: make static
 		return self::$MapColors;
 	}
 
@@ -104,6 +105,14 @@ class MapUtils {
 		self::$idConfig->set("map", $id);
 		self::$idConfig->save();
 		return $id;
+	}
+
+	public static function cacheMap(Map $map){//TODO: serialize?
+		self::$cachedMaps[$map->getMapId()] = $map;
+	}
+
+	public static function getCachedMap(int $uuid){
+		return self::$cachedMaps[$uuid]??-1;
 	}
 
 	public static function exportToPDF(Map $map){
