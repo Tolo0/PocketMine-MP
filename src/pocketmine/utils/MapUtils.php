@@ -116,21 +116,32 @@ class MapUtils {
 	}
 
 	/**
-	 * Returns the closest map color to a @link pocketmine\utils\Color
+	 * Returns the closest map color to a Color
 	 * This will ignore alpha
 	 * @param Color $color
 	 * @return Color
 	 */
 	public function getClosestMapColor(Color $color) {
-		$distance = PHP_INT_MAX;
-		$closestColor = new Color(0, 0, 0, 0);
-		foreach ($this->getMapColors() as $id => $mapColor) {
-			if (($newDistance = $color->distance($mapColor)) < $distance) {
-				$distance = $newDistance;
-				$closestColor = $mapColor;
+		if ($color->getA() > 128) return self::$MapColors[0];
+
+		$index = 0;
+		$best = -1;
+
+		for ($i = 4; $i < count(self::$MapColors); $i++) {
+			$distance = Color::getDistance($color, self::$MapColors[$i]);
+			if ($distance < $best || $best == -1) {
+				$best = $distance;
+				$index = $i;
 			}
 		}
-		return $closestColor;
+
+		return self::$MapColors[$index];
+	}
+
+	public static function distanceHSV(array $hsv1, array $hsv2) {
+		return ($hsv1['v'] - $hsv2['v']) ** 2
+			+ ($hsv1['s'] * cos($hsv1['h']) - $hsv2['s'] * cos($hsv2['h'])) ** 2
+			+ ($hsv1['s'] * sin($hsv1['h']) - $hsv2['s'] * sin($hsv2['h'])) ** 2;
 	}
 
 	public static function exportToPDF(Map $map){
