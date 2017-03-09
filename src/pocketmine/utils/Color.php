@@ -213,4 +213,8 @@ class Color {
 	public static function fromABGR(int $code){
 		return new Color($code & 0xff, ($code >> 8) & 0xff, ($code >> 16) & 0xff, ($code >> 24) & 0xff);
 	}
+
+	public function distance(Color $color1){
+		return sqrt(($color1->getR()-$this->getR())^2+($color1->getG()-$this->getG())^2+($color1->getB()-$this->getB())^2);
+	}
 }

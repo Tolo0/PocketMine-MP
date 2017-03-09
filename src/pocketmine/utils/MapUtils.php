@@ -115,6 +115,24 @@ class MapUtils {
 		return self::$cachedMaps[$uuid]??-1;
 	}
 
+	/**
+	 * Returns the closest map color to a @link pocketmine\utils\Color
+	 * This will ignore alpha
+	 * @param Color $color
+	 * @return Color
+	 */
+	public function getClosestMapColor(Color $color) {
+		$distance = PHP_INT_MAX;
+		$closestColor = new Color(0, 0, 0, 0);
+		foreach ($this->getMapColors() as $id => $mapColor) {
+			if (($newDistance = $color->distance($mapColor)) < $distance) {
+				$distance = $newDistance;
+				$closestColor = $mapColor;
+			}
+		}
+		return $closestColor;
+	}
+
 	public static function exportToPDF(Map $map){
 		if (!extension_loaded("gd")) {
 			Server::getInstance()->getLogger()->error("Unable to find the gd extension, can't create PNG image from Map");
@@ -137,6 +155,34 @@ class MapUtils {
 		}
 		return imagepng($img, $filename);
 	}
+
+/*	public function exportToNBT(string $name) {TODO
+byte[] data;
+Tag.Compound t = new Tag.Compound(name,
+new Tag.Compound("data", new Tag.Short("width", width),
+new Tag.Short("height", height),
+new Tag.Byte("scale", scale),
+new Tag.Byte("dimension", (byte)dimension.getId()),
+new Tag.Int("xCenter", xcenter),
+new Tag.Int("zCenter", zcenter),
+new Tag.ByteArray("colors", data = new byte[width*height])));
+for(int i = 0; i < width; ++i)
+{
+for(int j = 0; j < height; ++j)
+{
+Color c = new Color(colors.getRGB(i, j));
+for(int k = 0; k < MapColors.length; ++k)
+{
+if(c.equals(MapColors[k]))
+{
+data[i + j*width] = (byte)k;
+break;
+}
+}
+}
+}
+return t;
+	}*/
 
 	public static function getBlockColor(Block $block) {
 		$meta = $block->getDamage();
