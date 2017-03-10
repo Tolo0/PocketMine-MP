@@ -19,17 +19,25 @@
  *
 */
 
-namespace pocketmine\block;
 
-class Tripwire extends Flowable{
+namespace pocketmine\network\protocol\types;
 
-	protected $id = self::TRIPWIRE;
 
-	public function __construct($meta = 0){
-		$this->meta = $meta;
-	}
+interface InventoryNetworkIds{
 
-	public function getName(){
-		return "Tripwire";
-	}
+	const INVENTORY = -1;
+	const CONTAINER = 0;
+	const WORKBENCH = 1;
+	const FURNACE = 2;
+	const ENCHANTMENT = 3;
+	const BREWING_STAND = 4;
+	const ANVIL = 5;
+	const DISPENSER = 6;
+	const DROPPER = 7;
+	const HOPPER = 8;
+	const CAULDRON = 9;//WTF DUDE?!
+	const MINECART_CHEST = 10;
+	const MINECART_HOPPER = 11;
+	const HORSE = 12;
+	const BEACON = 13;
 }
