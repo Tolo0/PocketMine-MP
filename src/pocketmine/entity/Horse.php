@@ -1,7 +1,7 @@
 <?php
 namespace pocketmine\entity;
 
-use pocketmine\inventory\HorseInventory;
+use pocketmine\inventory\entity\HorseInventory;
 use pocketmine\inventory\Inventory;
 use pocketmine\inventory\InventoryHolder;
 use pocketmine\item\Item as ItemItem;

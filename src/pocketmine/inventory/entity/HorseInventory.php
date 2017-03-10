@@ -19,17 +19,13 @@
  *
 */
 
-namespace pocketmine\inventory;
+namespace pocketmine\inventory\entity;
 
-use pocketmine\entity\Entity;
 use pocketmine\entity\Horse;
-use pocketmine\entity\Human;
-use pocketmine\level\Level;
-use pocketmine\level\Position;
-use pocketmine\network\protocol\BlockEventPacket;
+use pocketmine\inventory\ContainerInventory;
+use pocketmine\inventory\InventoryHolder;
+use pocketmine\inventory\InventoryType;
 use pocketmine\Player;
-use pocketmine\tile\Chest;
-use pocketmine\tile\EnderChest;
 
 class HorseInventory extends ContainerInventory {
 	public function __construct(Horse $entity) {
@@ -37,16 +33,16 @@ class HorseInventory extends ContainerInventory {
 		parent::__construct($entity, InventoryType::get(InventoryType::HORSE));
 	}
 
+	public function onOpen(Player $who) {
+		$this->setContents($this->getHolder()->getInventory()->getContents());
+		parent::onOpen($who);
+	}
+
 	/**
 	 * @return Horse|InventoryHolder
 	 */
 	public function getHolder() {
 		return $this->holder;
-	}
-
-	public function onOpen(Player $who) {
-		$this->setContents($this->getHolder()->getInventory()->getContents());
-		parent::onOpen($who);
 	}
 
 	public function onClose(Player $who) {
