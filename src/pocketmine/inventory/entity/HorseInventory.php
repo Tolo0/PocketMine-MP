@@ -32,9 +32,9 @@ use pocketmine\tile\Chest;
 use pocketmine\tile\EnderChest;
 
 class HorseInventory extends ContainerInventory {
-	public function __construct(Entity $entity) {
+	public function __construct(Horse $entity) {
 		#parent::__construct(new EntityInventory($this, $entity), InventoryType::get(InventoryType::ENDER_CHEST));
-		parent::__construct(null, InventoryType::get(InventoryType::CHEST));
+		parent::__construct($entity, InventoryType::get(InventoryType::HORSE));
 	}
 
 	/**
@@ -45,35 +45,12 @@ class HorseInventory extends ContainerInventory {
 	}
 
 	public function onOpen(Player $who) {
-		$this->setContents($who->getEnderChestInventory()->getContents());
+		$this->setContents($this->getHolder()->getInventory()->getContents());
 		parent::onOpen($who);
-
-		if (count($this->getViewers()) === 1) {
-			$pk = new BlockEventPacket();
-			$pk->x = $this->getHolder()->getX();
-			$pk->y = $this->getHolder()->getY();
-			$pk->z = $this->getHolder()->getZ();
-			$pk->case1 = 1;
-			$pk->case2 = 2;
-			if (($level = $this->getHolder()->getLevel()) instanceof Level) {
-				$level->addChunkPacket($this->getHolder()->getX() >> 4, $this->getHolder()->getZ() >> 4, $pk);
-			}
-		}
 	}
 
 	public function onClose(Player $who) {
-		$who->getEnderChestInventory()->setContents($this->getContents());
-		if (count($this->getViewers()) === 1) {
-			$pk = new BlockEventPacket();
-			$pk->x = $this->getHolder()->getX();
-			$pk->y = $this->getHolder()->getY();
-			$pk->z = $this->getHolder()->getZ();
-			$pk->case1 = 1;
-			$pk->case2 = 0;
-			if (($level = $this->getHolder()->getLevel()) instanceof Level) {
-				$level->addChunkPacket($this->getHolder()->getX() >> 4, $this->getHolder()->getZ() >> 4, $pk);
-			}
-		}
+		$this->getHolder()->getInventory()->setContents($this->getContents());
 		parent::onClose($who);
 	}
 }

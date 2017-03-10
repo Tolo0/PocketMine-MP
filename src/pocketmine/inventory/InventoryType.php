@@ -35,7 +35,7 @@ class InventoryType{
 	const FURNACE = 3;
 	const CRAFTING = 4;
 	const WORKBENCH = 5;
-	const STONECUTTER = 6;
+	const STONECUTTER = 6;//removed since.. forever!
 	const BREWING_STAND = 7;
 	const ANVIL = 8;
     const ENCHANT_TABLE = 9;
@@ -45,7 +45,10 @@ class InventoryType{
 	const ENDER_CHEST = 13;
 	const BEACON = 14;
 
-    const PLAYER_FLOATING = 254;//#TODO
+	/* Entities */
+	const HORSE = 15;
+
+    const PLAYER_FLOATING = 254;//TODO
 
 	private static $default = [];
 
@@ -85,6 +88,8 @@ class InventoryType{
 			static::HOPPER => new InventoryType(5, "Hopper", InventoryNetworkIds::HOPPER), //5 CONTAINER
 			static::ENDER_CHEST => new InventoryType(27, "Ender Chest", InventoryNetworkIds::CONTAINER),
 			static::BEACON => new InventoryType(0, "Beacon", InventoryNetworkIds::BEACON),
+			/* Entities */
+			static::HORSE => new InventoryType(0, "Horse", InventoryNetworkIds::HORSE),
 		];
 	}
 

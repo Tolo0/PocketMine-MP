@@ -24,8 +24,8 @@ class Horse extends Animal implements Rideable, InventoryHolder, Tameable, Namea
 	private $inventory;
 
 	public function initEntity() {
+		$this->inventory = new HorseInventory($this);
 		parent::initEntity();
-		$this->inventory = null;
 	}
 
 	public function spawnTo(Player $player) {
