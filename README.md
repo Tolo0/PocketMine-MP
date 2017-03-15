@@ -1,9 +1,8 @@
 ![ClearSky](https://github.com/ClearSkyTeam/ClearSky/blob/master/images/CSbanner.png)
-__We are not dead. We are just dktapps-proof.__
 
 # ClearSky - A fast Minecraft PE server software based on [PocketMine-MP](https://github.com/pmmp/PocketMine-MP)
 ClearSky is a fast Minecraft: Pocket Edition server software, finally back as a real FORK of [PocketMine-MP](https://github.com/pmmp/PocketMine-MP)
-## Why ClearSky?
+## Why should i use ClearSky?
 #### Because our awesome, highly skilled Team is mostly focusing on making the server behave like singleplayer, whilest having high performant and clean code.
 - It has most of the blocks, items and entities that pmmp doesn't have yet. See [Issue #2](https://github.com/ClearSkyTeam/PocketMine-MP/issues/2) for further information.
 - The projects we sometimes clone code from are [Genisys](https://github.com/iTXTech/Genisys), [Nukkit](https://github.com/Nukkit/Nukkit) and [IM](https://github.com/ImagicalCorp/ImagicalMine) (last one is dead). Everytime we take code from other projects we reference the commit in the commit title or description! We may also just cherry-pick the commit.
@@ -11,7 +10,7 @@ ClearSky is a fast Minecraft: Pocket Edition server software, finally back as a 
 ### Remember: Please only use the cs-1.0 branch or a release in [releases](https://github.com/ClearSkyTeam/PocketMine-MP/releases) for production servers.
 
 **TravisCI Build Status** [![TravisCI](https://travis-ci.org/ClearSkyTeam/ClearSky.svg?branch=master)](https://travis-ci.org/ClearSkyTeam/ClearSky "TravisCI Build Status")
-**CircleCI Build Status** [![Build Status](https://circleci.com/gh/ClearSkyTeam/ClearSky.svg?style=shield&branch=master)](https://circleci.com/gh/ClearSkyTeam/ClearSky "CircleCI Build Status")
+**CircleCI Build Status** [![Build Status](https://circleci.com/gh/ClearSkyTeam/PocketMine-MP/tree/cs-1.0.svg?style=shield)](https://circleci.com/gh/ClearSkyTeam/PocketMine-MP "CircleCI Build Status")
 
 ### Setup, help & support, FAQs
 Head over to the [documentation site](http://pmmp.readthedocs.org/).
@@ -29,7 +28,7 @@ If you don't find what you're looking for there, [talk to a human](#discussion).
 There are a very wide range of already-written plugins available which you can use to customise your server. Check out the [old plugin repository](http://plugins.pocketmine.net/), [Poggit](https://poggit.pmmp.io) or just search GitHub.
 
 ### For developers
- * [Latest API documentation](https://jenkins.pmmp.io/job/PocketMine-MP%20Docs/doxygen/) - Doxygen documentation generated from development
+ * [Latest API documentation](https://jenkins.pmmp.io/job/PocketMine-MP-doc/doxygen/) - Doxygen documentation generated from development
  * [DevTools](https://github.com/pmmp/PocketMine-DevTools/) - A development tools plugin for creating plugins.
 
 ### Can I contribute?
@@ -37,7 +36,7 @@ Yes, you can! Contributions are welcomed provided that they comply with our [Con
 
 ### Where can I get the latest .phar?
  - Currently, you can't. We are working on adding it back though.
- - You can get the latest auto build phar here: [CSPhar](http://robskebueba.no-ip.biz/CSPhar.php) or [CSPhar by Dan](http://wolvesfortress.de/phar/CSPhar/CSPhar.php) (beta)
+ - You can get the latest auto build phar here: [CSPhar](http://robskebueba.no-ip.biz/CSPhar.php) or [CSPhar by Dan](https://phar.wolvesfortress.de) (beta)
  - You can get an optimized PHP environment here: [SalmonGER/PHPbinary](https://github.com/SalmonGER/PocketMine-MP-Binarys).
  - You can get a Multicraft config demo here: [ClearSkyTeam/MulticraftConfig](https://github.com/ClearSkyTeam/MulticraftConfig).
 
