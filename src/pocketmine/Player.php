@@ -541,16 +541,14 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 	}
 
 	public function sendCommandData(){
-		$data = new \stdClass();
-		$count = 0;
+		$data = [];
 		foreach($this->server->getCommandMap()->getCommands() as $command){
-			if(($cmdData = $command->generateCustomCommandData($this)) !== null){
-				++$count;
-				$data->{$command->getName()}->versions[0] = $cmdData;
+			if(count($cmdData = $command->generateCustomCommandData($this)) > 0){
+				$data[$command->getName()]["versions"][0] = $cmdData;
 			}
 		}
 
-		if($count > 0){
+		if(count($data) > 0){
 			//TODO: structure checking
 			$pk = new AvailableCommandsPacket();
 			$pk->commands = json_encode($data);
@@ -1049,25 +1047,6 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 		}
 
 		$timings->stopTiming();
-		return true;
-	}
-
-	/**
-	 * @param string $address
-	 * @param int $port
-	 * @return bool transferred
-	 */
-	public function transferTo(string $address, int $port = 19132) {
-		$this->server->getPluginManager()->callEvent($ev = new PlayerTransferEvent($this, $address, $port));
-		if ($ev->isCancelled()) {
-			return false;
-		}
-		$pk = new TransferPacket();
-		$pk->address = $ev->getAddress();
-		$pk->port = $ev->getPort();
-		$this->dataPacket($pk);
-		Command::broadcastCommandMessage($this, new TranslationContainer("Transferred to {%0}:{%1}", [$ev->getAddress(), $ev->getPort()]));
-
 		return true;
 	}
 
@@ -2038,14 +2017,14 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 						if($this->level->useItemOn($blockVector, $item, $packet->face, $packet->fx, $packet->fy, $packet->fz, $this) === true){
 							break;
 						}
-					}elseif(!$this->inventory->getItemInHand()->deepEquals($packet->item)){
+					}elseif(!$this->inventory->getItemInHand()->equals($packet->item)){
 						$this->inventory->sendHeldItem($this);
 					}else{
 						$item = $this->inventory->getItemInHand();
 						$oldItem = clone $item;
 						//TODO: Implement adventure mode checks
 						if($this->level->useItemOn($blockVector, $item, $packet->face, $packet->fx, $packet->fy, $packet->fz, $this)){
-							if(!$item->deepEquals($oldItem) or $item->getCount() !== $oldItem->getCount()){
+							if(!$item->equals($oldItem) or $item->getCount() !== $oldItem->getCount()){
 								$this->inventory->setItemInHand($item);
 								$this->inventory->sendHeldItem($this->hasSpawned);
 							}
@@ -2072,7 +2051,7 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 
 					if($this->isCreative()){
 						$item = $this->inventory->getItemInHand();
-					}elseif(!$this->inventory->getItemInHand()->deepEquals($packet->item)){
+					}elseif(!$this->inventory->getItemInHand()->equals($packet->item)){
 						$this->inventory->sendHeldItem($this);
 						break;
 					}else{
@@ -2482,7 +2461,7 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 
 				if($this->canInteract($vector->add(0.5, 0.5, 0.5), $this->isCreative() ? 13 : 6) and $this->level->useBreakOn($vector, $item, $this, true)){
 					if($this->isSurvival()){
-						if(!$item->deepEquals($oldItem) or $item->getCount() !== $oldItem->getCount()){
+						if(!$item->equals($oldItem) or $item->getCount() !== $oldItem->getCount()){
 							$this->inventory->setItemInHand($item);
 							$this->inventory->sendHeldItem($this->hasSpawned);
 						}
@@ -2823,7 +2802,7 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 							$item = $packet->input[$y * 3 + $x];
 							$ingredient = $recipe->getIngredient($x, $y);
 							if($item->getCount() > 0){
-								if($ingredient === null or !$ingredient->deepEquals($item, !$ingredient->hasAnyDamageValue(), $ingredient->hasCompoundTag())){
+								if($ingredient === null or !$ingredient->equals($item, !$ingredient->hasAnyDamageValue(), $ingredient->hasCompoundTag())){
 									$canCraft = false;
 									break;
 								}
@@ -2839,7 +2818,7 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 							$item = clone $packet->input[$y * 3 + $x];
 
 							foreach($needed as $k => $n){
-								if($n->deepEquals($item, !$n->hasAnyDamageValue(), $n->hasCompoundTag())){
+								if($n->equals($item, !$n->hasAnyDamageValue(), $n->hasCompoundTag())){
 									$remove = min($n->getCount(), $item->getCount());
 									$n->setCount($n->getCount() - $remove);
 									$item->setCount($item->getCount() - $remove);
@@ -2868,7 +2847,7 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 				$ingredients = $packet->input;
 				$result = $packet->output[0];
 
-				if(!$canCraft or !$recipe->getResult()->deepEquals($result)){
+				if(!$canCraft or !$recipe->getResult()->equals($result)){
 					$this->server->getLogger()->debug("Unmatched recipe " . $recipe->getId() . " from player " . $this->getName() . ": expected " . $recipe->getResult() . ", got " . $result . ", using: " . implode(", ", $ingredients));
 					$this->inventory->sendContents($this);
 					break;
@@ -3005,7 +2984,7 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 						break;
 				}
 
-				if($transaction->getSourceItem()->deepEquals($transaction->getTargetItem()) and $transaction->getTargetItem()->getCount() === $transaction->getSourceItem()->getCount()){ //No changes!
+				if($transaction->getSourceItem()->equals($transaction->getTargetItem()) and $transaction->getTargetItem()->getCount() === $transaction->getSourceItem()->getCount()){ //No changes!
 					//No changes, just a local inventory update sent by the client
 					break;
 				}
@@ -3119,20 +3098,17 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 	 *
 	 * @return bool if transfer was successful.
 	 */
-	public function transfer(string $address, int $port = 19132, string $message = "transfer") : bool{
-		$this->server->getPluginManager()->callEvent($ev = new PlayerTransferEvent($this, $address, $port, $message));
-
-		if(!$ev->isCancelled()){
-			$pk = new TransferPacket();
-			$pk->address = $ev->getAddress();
-			$pk->port = $ev->getPort();
-			$this->dataPacket($pk);
-			$this->close("", $ev->getMessage(), false);
-
-			return true;
+	public function transfer(string $address, int $port = 19132) {
+		$this->server->getPluginManager()->callEvent($ev = new PlayerTransferEvent($this, $address, $port));
+		if ($ev->isCancelled()) {
+			return false;
 		}
-
-		return false;
+		$pk = new TransferPacket();
+		$pk->address = $ev->getAddress();
+		$pk->port = $ev->getPort();
+		$this->dataPacket($pk);
+		Command::broadcastCommandMessage($this, new TranslationContainer("Transferred to {%0}:{%1}", [$ev->getAddress(), $ev->getPort()]));
+		return true;
 	}
 
 	/**
