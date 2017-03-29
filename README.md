@@ -1,16 +1,28 @@
-# [![PocketMine-MP](http://cdn.pocketmine.net/img/PocketMine-MP-h.png)](https://pmmp.io)
+![ClearSky](https://github.com/ClearSkyTeam/ClearSky/blob/master/images/CSbanner.png)
 
-__A highly customisable, open source server software for Minecraft: Pocket Edition written in PHP__
+# ClearSky - A fast Minecraft PE server software based on [PocketMine-MP](https://github.com/pmmp/PocketMine-MP)
+ClearSky is a fast Minecraft: Pocket Edition server software, finally back as a real FORK of [PocketMine-MP](https://github.com/pmmp/PocketMine-MP)
+## Why should i use ClearSky?
+#### Because our awesome, highly skilled Team is mostly focusing on making the server behave like singleplayer, whilest having high performant and clean code.
+- It has most of the blocks, items and entities that pmmp doesn't have yet. See [Issue #2](https://github.com/ClearSkyTeam/PocketMine-MP/issues/2) for further information.
+- The projects we sometimes clone code from are [Genisys](https://github.com/iTXTech/Genisys), [Nukkit](https://github.com/Nukkit/Nukkit) and [IM](https://github.com/ImagicalCorp/ImagicalMine) (last one is dead). Everytime we take code from other projects we reference the commit in the commit title or description! We may also just cherry-pick the commit.
 
-[![Build Status](https://travis-ci.org/pmmp/PocketMine-MP.svg?branch=master)](https://travis-ci.org/pmmp/PocketMine-MP)
+### Remember: Please only use the cs-1.0 branch or a release in [releases](https://github.com/ClearSkyTeam/PocketMine-MP/releases) for production servers.
+
+**TravisCI Build Status** [![TravisCI](https://travis-ci.org/ClearSkyTeam/ClearSky.svg?branch=master)](https://travis-ci.org/ClearSkyTeam/ClearSky "TravisCI Build Status")
+**CircleCI Build Status** [![Build Status](https://circleci.com/gh/ClearSkyTeam/PocketMine-MP/tree/cs-1.0.svg?style=shield)](https://circleci.com/gh/ClearSkyTeam/PocketMine-MP "CircleCI Build Status")
 
 ### Setup, help & support, FAQs
 Head over to the [documentation site](http://pmmp.readthedocs.org/).
 If you don't find what you're looking for there, [talk to a human](#discussion). Please do not use our issue tracker for support requests.
+####If you are a Windows user and use "download zip", don't forget:
+* ***Raklib: https://github.com/PocketMine/RakLib***
+* ***SPL: https://github.com/PocketMine/PocketMine-SPL***
+* ***Language files: https://github.com/pmmp/PocketMine-Language***
 
 ### Discussion
-- [Forums](https://forums.pmmp.io/)
-- [#pmmp + #pocketmine channel IRC](http://webchat.freenode.net/?channels=pmmp,pocketmine)
+ - Here is our Telegram group, where you can communicate with us: [Telegram/ClearSky](https://telegram.me/joinchat/AlErxD3AN_GOgeSAcS0twA).
+ - Here is our Telegram plugin group, where you can talk about plugin development: [Telegram/PMPlugins](https://t.me/pmplugins)
 
 ### Plugins
 There are a very wide range of already-written plugins available which you can use to customise your server. Check out the [old plugin repository](http://plugins.pocketmine.net/), [Poggit](https://poggit.pmmp.io) or just search GitHub.
@@ -20,10 +32,13 @@ There are a very wide range of already-written plugins available which you can u
  * [DevTools](https://github.com/pmmp/PocketMine-DevTools/) - A development tools plugin for creating plugins.
 
 ### Can I contribute?
-Yes you can! Contributions are welcomed provided that they comply with our [Contributing Guidelines](CONTRIBUTING.md). Please ensure you read the relevant sections of the guidelines carefully before making a Pull Request or opening an Issue.
+Yes, you can! Contributions are welcomed provided that they comply with our [Contributing Guidelines](CONTRIBUTING.md). Please ensure you read the relevant sections of the guidelines carefully before making a Pull Request or opening an Issue.
 
 ### Where can I get the latest .phar?
-Head over to our [official Jenkins server](https://jenkins.pmmp.io/)
+ - Currently, you can't. We are working on adding it back though.
+ - You can get the latest auto build phar here: [CSPhar](http://robskebueba.no-ip.biz/CSPhar.php) or [CSPhar by Dan](https://phar.wolvesfortress.de) (beta)
+ - You can get an optimized PHP environment here: [SalmonGER/PHPbinary](https://github.com/SalmonGER/PocketMine-MP-Binarys).
+ - You can get a Multicraft config demo here: [ClearSkyTeam/MulticraftConfig](https://github.com/ClearSkyTeam/MulticraftConfig).
 
 ## Third-party Libraries/Protocols Used
 * __[PHP Sockets](http://php.net/manual/en/book.sockets.php)__
@@ -52,4 +67,4 @@ Head over to our [official Jenkins server](https://jenkins.pmmp.io/)
 	You should have received a copy of the GNU Lesser General Public License
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-pmmp/PocketMine are not affiliated with Mojang. All brands and trademarks belong to their respective owners. PocketMine-MP is not a Mojang-approved software, nor is it associated with Mojang.
+[pmmp/PocketMine](https://github.com/pmmp/PocketMine-MP) and [ClearSkyTeam/PocketMine](https://github.com/ClearSkyTeam/PocketMine-MP) are not affiliated with Mojang. All brands and trademarks belong to their respective owners. PocketMine-MP is not a Mojang-approved software, nor is it associated with Mojang.
