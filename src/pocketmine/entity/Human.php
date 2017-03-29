@@ -24,7 +24,7 @@ namespace pocketmine\entity;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\EntityRegainHealthEvent;
 use pocketmine\event\player\PlayerExhaustEvent;
-use pocketmine\inventory\EnderChestInventory;
+#use pocketmine\inventory\EnderChestInventory;
 use pocketmine\inventory\InventoryHolder;
 use pocketmine\inventory\PlayerInventory;
 use pocketmine\item\Item as ItemItem;
@@ -272,7 +272,7 @@ class Human extends Creature implements ProjectileSource, InventoryHolder{
 		$this->setDataProperty(self::DATA_PLAYER_BED_POSITION, self::DATA_TYPE_POS, [0, 0, 0], false);
 
         $this->inventory = new PlayerInventory($this);
-        $this->enderChestInventory = new EnderChestInventory($this);
+        #$this->enderChestInventory = new EnderChestInventory($this);
 		if($this instanceof Player){
 			$this->addWindow($this->inventory, 0);
 		}else{
@@ -299,11 +299,11 @@ class Human extends Creature implements ProjectileSource, InventoryHolder{
             }
         }
 
-        if(isset($this->namedtag->EnderChestInventory) and $this->namedtag->EnderChestInventory instanceof ListTag){
+        /*if(isset($this->namedtag->EnderChestInventory) and $this->namedtag->EnderChestInventory instanceof ListTag){
             foreach($this->namedtag->EnderChestInventory as $item){
                 $this->enderChestInventory->setItem($item["Slot"], ItemItem::nbtDeserialize($item));
             }
-        }
+        }*/
 
 		if(isset($this->namedtag->SelectedInventorySlot) and $this->namedtag->SelectedInventorySlot instanceof IntTag){
 			$this->inventory->setHeldItemIndex($this->namedtag->SelectedInventorySlot->getValue(), false);

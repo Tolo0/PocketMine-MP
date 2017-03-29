@@ -78,9 +78,9 @@ class Beacon extends Solid {
 				Tile::createTile(Tile::BEACON, $this->getLevel(), $nbt);
 			}
 
-			if($beacon instanceof TileBeacon){
+			/*if($beacon instanceof TileBeacon){
 				$player->addWindow($beacon->getInventory());
-			}
+			}*/
 		}
 
 		return true;

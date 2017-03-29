@@ -51,7 +51,7 @@ class Beacon extends Spawnable implements Nameable, InventoryHolder {
 		if (!isset($nbt->secondary)) {
 			$nbt->secondary = new IntTag("secondary", 0);
 		}
-		$this->inventory = new BeaconInventory($this);
+		#$this->inventory = new BeaconInventory($this);
 		parent::__construct($level, $nbt);
 		$this->scheduleUpdate();
 	}
